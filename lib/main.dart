@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 // firebase_coreをimportする
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // mainをasyncにしてしまう
@@ -10,12 +9,6 @@ Future<void> main() async {
   // 2行追記
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
-  // とりあえずFirebaseAuthに
-  // await FirebaseAuth.instance.signInAnonymously();
-
-  // とりあえずFirestoreへ書き込んで見るテストコード
-  await FirebaseFirestore.instance.collection('baby').add({'hoge': 'piyo'});
 
   runApp(MyApp());
 }
@@ -69,15 +62,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
+  void _postFireStore() async {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
+
+    // とりあえずFirestoreへ書き込んで見るテストコード
+    await FirebaseFirestore.instance
+        .collection('baby')
+        .doc(_counter.toString())
+        .set({'hoge': _counter});
+  }
+
+  void _readFireStore() async {
+    final test = await FirebaseFirestore.instance
+        .collection('baby')
+        .doc(_counter.toString())
+        .get();
+
+    print(test.data());
   }
 
   @override
@@ -88,12 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+    var scaffold = Scaffold(
+      // appBar: AppBar(
+      //   // Here we take the value from the MyHomePage object that was created by
+      //   // the App.build method, and use it to set our appbar title.
+      //   title: Text(widget.title),
+      // ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -114,21 +117,33 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
+            // Text(
+            //   'You have pushed the button this many times:',
+            // ),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            FlatButton(
+              onPressed: _postFireStore,
+              color: Colors.blue,
+              child: Text(
+                '追加',
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              ),
+            ),
+            FlatButton(
+              onPressed: _readFireStore,
+              color: Colors.blue,
+              child: Text(
+                '読みとり',
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+    return scaffold;
   }
 }

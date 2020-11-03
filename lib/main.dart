@@ -60,25 +60,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  // ドキュメントid
+  int _counter = 1;
+
+  final usersCollenction = FirebaseFirestore.instance.collection('users');
+
+  String _text = '';
+
+  void _handleText(String e) {
+    setState(() {
+      _text = e;
+    });
+  }
 
   void _postFireStore() async {
+    // とりあえずFirestoreへ書き込んで見るテストコード
+    await usersCollenction.doc(_counter.toString()).set({'hoge': _text});
+
     setState(() {
       _counter++;
     });
-
-    // とりあえずFirestoreへ書き込んで見るテストコード
-    await FirebaseFirestore.instance
-        .collection('baby')
-        .doc(_counter.toString())
-        .set({'hoge': _counter});
   }
 
   void _readFireStore() async {
-    final test = await FirebaseFirestore.instance
-        .collection('baby')
-        .doc(_counter.toString())
-        .get();
+    final test = await usersCollenction.doc((_counter - 1).toString()).get();
 
     print(test.data());
   }
@@ -124,6 +129,24 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            Text(
+              "$_text",
+              style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w300),
+            ),
+            new TextField(
+              enabled: true,
+              // 入力数
+              maxLength: 10,
+              maxLengthEnforced: false,
+              style: TextStyle(color: Colors.red),
+              obscureText: false,
+              maxLines: 1,
+              //パスワード
+              onChanged: _handleText,
+            ),
             FlatButton(
               onPressed: _postFireStore,
               color: Colors.blue,
@@ -144,6 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+
     return scaffold;
   }
 }

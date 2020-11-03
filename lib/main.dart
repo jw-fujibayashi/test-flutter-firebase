@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:geolocator/geolocator.dart';
+
 // mainをasyncにしてしまう
 Future<void> main() async {
-  // 2行追記
+  // 初期化
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -63,19 +65,28 @@ class _MyHomePageState extends State<MyHomePage> {
   // ドキュメントid
   int _counter = 1;
 
-  final usersCollenction = FirebaseFirestore.instance.collection('users');
+  // 名前
+  String _name = '';
 
-  String _text = '';
+  // 位置情報
+  Position _position;
+
+  // コレクション
+  final usersCollenction = FirebaseFirestore.instance.collection('users');
 
   void _handleText(String e) {
     setState(() {
-      _text = e;
+      _name = e;
     });
   }
 
   void _postFireStore() async {
     // とりあえずFirestoreへ書き込んで見るテストコード
-    await usersCollenction.doc(_counter.toString()).set({'hoge': _text});
+    await usersCollenction.doc(_counter.toString()).set({
+      'name': _name,
+      'latitude': _position.latitude.toString(),
+      'longitude': _position.longitude.toString()
+    });
 
     setState(() {
       _counter++;
@@ -86,6 +97,15 @@ class _MyHomePageState extends State<MyHomePage> {
     final test = await usersCollenction.doc((_counter - 1).toString()).get();
 
     print(test.data());
+  }
+
+  void _getCurrentPosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      _position = position;
+    });
   }
 
   @override
@@ -130,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             Text(
-              "$_text",
+              "$_name",
               style: TextStyle(
                   color: Colors.blueAccent,
                   fontSize: 30.0,
@@ -147,6 +167,13 @@ class _MyHomePageState extends State<MyHomePage> {
               //パスワード
               onChanged: _handleText,
             ),
+            Text(
+              "$_position",
+              style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w300),
+            ),
             FlatButton(
               onPressed: _postFireStore,
               color: Colors.blue,
@@ -160,6 +187,14 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.blue,
               child: Text(
                 '読みとり',
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              ),
+            ),
+            FlatButton(
+              onPressed: _getCurrentPosition,
+              color: Colors.blue,
+              child: Text(
+                '位置情報',
                 style: TextStyle(color: Colors.white, fontSize: 20.0),
               ),
             ),

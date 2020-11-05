@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // firebase_coreをimportする
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 import 'package:geolocator/geolocator.dart';
 
@@ -108,6 +109,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _doCluodFunctions() async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('helloWorld');
+    final results = await callable();
+    print(results.data);
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -195,6 +203,14 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.blue,
               child: Text(
                 '位置情報',
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              ),
+            ),
+            FlatButton(
+              onPressed: _doCluodFunctions,
+              color: Colors.blue,
+              child: Text(
+                'cloud func',
                 style: TextStyle(color: Colors.white, fontSize: 20.0),
               ),
             ),

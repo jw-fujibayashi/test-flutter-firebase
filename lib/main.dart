@@ -99,11 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final List images = [
-    "images/image1.jpg",
-    "images/image2.jpg",
-    "images/image3.jpg",
-    "images/image4.jpg",
-    "images/image5.jpg"
+    // "images/image1.jpg",
+    // "images/image2.jpg",
+    // "images/image3.jpg",
+    // "images/image4.jpg",
+    // "images/image5.jpg",
+    "https://lh3.googleusercontent.com/p/AF1QipN7VB-ORFQ2SwUOiBbbD3I4crdBcYCHSkXPpu22=s1600-w400"
   ];
 
   @override
@@ -118,7 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         itemCount: images.length,
         itemBuilder: (BuildContext context, int index) {
-          return Image.asset(
+          return Image.network(
+            // ネットワーク経由で画像を読み込み
             images[index],
           );
         },

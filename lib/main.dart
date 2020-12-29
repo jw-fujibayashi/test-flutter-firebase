@@ -132,8 +132,8 @@ class _MyHomePageState extends State<MyHomePage> {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: Container(
-                width: 80,
-                height: 80,
+                width: 60,
+                height: 60,
                 child: FloatingActionButton(
                   backgroundColor: Theme.of(context).accentColor, //ボタンの背景色
                   onPressed: () {}, //ボタンの関数
@@ -149,10 +149,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: new Row(
                   mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     IconButton(
                       icon: Icon(
@@ -168,6 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       onPressed: () {},
                     ),
+                    SizedBox(width: 25),
                     IconButton(
                       icon: Icon(
                         Icons.info_outline,

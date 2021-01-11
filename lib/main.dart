@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import './my_flutter_app_icons.dart';
+// import './my_flutter_app_icons.dart';
 
 // firebase_coreをimportする
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:cloud_functions/cloud_functions.dart';
 
-// import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart';
+import 'dart:async';
 
 // import 'package:carousel_slider/carousel_slider.dart';
 
@@ -51,9 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // 名前
   // String _name = '';
 
-  // 位置情報
-  // Position _position;
-
   // コレクション
   // final usersCollenction = FirebaseFirestore.instance.collection('users');
 
@@ -82,15 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
   //   print(test.data());
   // }
 
-  // void _getCurrentPosition() async {
-  //   Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-
-  //   setState(() {
-  //     _position = position;
-  //   });
-  // }
-
   // void _doCluodFunctions() async {
   //   final HttpsCallable callable =
   //       FirebaseFunctions.instanceFor(region: 'us-central1')
@@ -110,154 +99,190 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // final buttonImg = "images/button-img.jpg";
 
+  // 位置情報
+  Position _position;
+
+  void _getCurrentPosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      _position = position;
+    });
+  }
+
+  //アプリ起動時に実行
+  @override
+  void initState() {
+    super.initState();
+    // アラートダイアログ
+    Future.delayed(Duration.zero, () {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                content: Text('本アプリでは位置情報を活用します'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('CANCEL'),
+                    onPressed: () => {Navigator.pop(context)},
+                  ),
+                  FlatButton(
+                      child: Text('OK'),
+                      onPressed: () =>
+                          {_getCurrentPosition(), Navigator.pop(context)}),
+                ],
+              ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var scaffold = MaterialApp(
-        home: Scaffold(
-            appBar: AppBar(
-              title: const Text('Sample1'),
+    // var scaffold = MaterialApp(
+    //     home: Scaffold(
+    //         appBar: AppBar(
+    //           title: const Text('Sample1'),
+    //         ),
+    //         body: Center(
+    //           child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.center,
+    //             children: <Widget>[
+    //               Text(
+    //                 'メイン画面',
+    //                 style: Theme.of(context).textTheme.display1,
+    //               ),
+    //             ],
+    //             // color: Colors.green
+    //           ),
+    //         ),
+    //         floatingActionButtonLocation:
+    //             FloatingActionButtonLocation.centerDocked,
+    //         floatingActionButton: Container(
+    //             width: 60,
+    //             height: 60,
+    //             child: FloatingActionButton(
+    //               backgroundColor: Theme.of(context).accentColor, //ボタンの背景色
+    //               onPressed: () {}, //ボタンの関数
+    //               child: Icon(MyFlutterApp.button_img), //ボタンの画像
+    //             )),
+    //         bottomNavigationBar: BottomAppBar(
+    //           color: Colors.white, //バーの色
+    //           notchMargin: 0, // ボタンとバーのマージン
+    //           shape: AutomaticNotchedShape(
+    //             RoundedRectangleBorder(),
+    //             StadiumBorder(
+    //               side: BorderSide(),
+    //             ),
+    //           ),
+    //           child: Padding(
+    //             padding: const EdgeInsets.symmetric(horizontal: 4.0),
+    //             child: new Row(
+    //               mainAxisSize: MainAxisSize.max,
+    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //               children: <Widget>[
+    //                 IconButton(
+    //                   icon: Icon(
+    //                     Icons.person_outline,
+    //                     color: Colors.green,
+    //                   ),
+    //                   onPressed: () {},
+    //                 ),
+    //                 IconButton(
+    //                   icon: Icon(
+    //                     Icons.info_outline,
+    //                     color: Colors.green,
+    //                   ),
+    //                   onPressed: () {},
+    //                 ),
+    //                 SizedBox(width: 25),
+    //                 IconButton(
+    //                   icon: Icon(
+    //                     Icons.info_outline,
+    //                     color: Colors.green,
+    //                   ),
+    //                   onPressed: () {},
+    //                 ),
+    //                 IconButton(
+    //                   icon: Icon(
+    //                     Icons.info_outline,
+    //                     color: Colors.green,
+    //                   ),
+    //                   onPressed: () {},
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //         )));
+    var scaffold = Scaffold(
+      // Text(
+      //   'You have pushed the button this many times:',
+      // ),
+      // Text(
+      //   '$_counter',
+      //   style: Theme.of(context).textTheme.headline4,
+      // ),
+      // Text(
+      //   "$_name",
+      //   style: TextStyle(
+      //       color: Colors.blueAccent,
+      //       fontSize: 30.0,
+      //       fontWeight: FontWeight.w300),
+      // ),
+      // new TextField(
+      //   enabled: true,
+      //   // 入力数
+      //   maxLength: 10,
+      //   maxLengthEnforced: false,
+      //   style: TextStyle(color: Colors.red),
+      //   obscureText: false,
+      //   maxLines: 1,
+      // ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "$_position",
+              style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w300),
             ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'メイン画面',
-                    style: Theme.of(context).textTheme.display1,
-                  ),
-                ],
-                // color: Colors.green
+            // FlatButton(
+            //   onPressed: _postFireStore,
+            //   color: Colors.blue,
+            //   child: Text(
+            //     '追加',
+            //     style: TextStyle(color: Colors.white, fontSize: 20.0),
+            //   ),
+            // ),
+            // FlatButton(
+            //   onPressed: _readFireStore,
+            //   color: Colors.blue,
+            //   child: Text(
+            //     '読みとり',
+            //     style: TextStyle(color: Colors.white, fontSize: 20.0),
+            //   ),
+            // ),
+            FlatButton(
+              onPressed: _getCurrentPosition,
+              color: Colors.blue,
+              child: Text(
+                '位置情報',
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
               ),
             ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: Container(
-                width: 60,
-                height: 60,
-                child: FloatingActionButton(
-                  backgroundColor: Theme.of(context).accentColor, //ボタンの背景色
-                  onPressed: () {}, //ボタンの関数
-                  child: Icon(MyFlutterApp.button_img), //ボタンの画像
-                )),
-            bottomNavigationBar: BottomAppBar(
-              color: Colors.white, //バーの色
-              notchMargin: 0, // ボタンとバーのマージン
-              shape: AutomaticNotchedShape(
-                RoundedRectangleBorder(),
-                StadiumBorder(
-                  side: BorderSide(),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: new Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.person_outline,
-                        color: Colors.green,
-                      ),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.info_outline,
-                        color: Colors.green,
-                      ),
-                      onPressed: () {},
-                    ),
-                    SizedBox(width: 25),
-                    IconButton(
-                      icon: Icon(
-                        Icons.info_outline,
-                        color: Colors.green,
-                      ),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.info_outline,
-                        color: Colors.green,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ),
-            )));
-    // body: Center(
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    // children: <Widget>[
-    // Text(
-    //   'You have pushed the button this many times:',
-    // ),
-    // Text(
-    //   '$_counter',
-    //   style: Theme.of(context).textTheme.headline4,
-    // ),
-    // Text(
-    //   "$_name",
-    //   style: TextStyle(
-    //       color: Colors.blueAccent,
-    //       fontSize: 30.0,
-    //       fontWeight: FontWeight.w300),
-    // ),
-    // new TextField(
-    //   enabled: true,
-    //   // 入力数
-    //   maxLength: 10,
-    //   maxLengthEnforced: false,
-    //   style: TextStyle(color: Colors.red),
-    //   obscureText: false,
-    //   maxLines: 1,
-    //   //パスワード
-    //   onChanged: _handleText,
-    // ),
-    // Text(
-    //   "$_position",
-    //   style: TextStyle(
-    //       color: Colors.blueAccent,
-    //       fontSize: 30.0,
-    //       fontWeight: FontWeight.w300),
-    // ),
-    // FlatButton(
-    //   onPressed: _postFireStore,
-    //   color: Colors.blue,
-    //   child: Text(
-    //     '追加',
-    //     style: TextStyle(color: Colors.white, fontSize: 20.0),
-    //   ),
-    // ),
-    // FlatButton(
-    //   onPressed: _readFireStore,
-    //   color: Colors.blue,
-    //   child: Text(
-    //     '読みとり',
-    //     style: TextStyle(color: Colors.white, fontSize: 20.0),
-    //   ),
-    // ),
-    // FlatButton(
-    //   onPressed: _getCurrentPosition,
-    //   color: Colors.blue,
-    //   child: Text(
-    //     '位置情報',
-    //     style: TextStyle(color: Colors.white, fontSize: 20.0),
-    //   ),
-    // ),
-    // FlatButton(
-    //   onPressed: _doCluodFunctions,
-    //   color: Colors.blue,
-    //   child: Text(
-    //     'cloud func',
-    //     style: TextStyle(color: Colors.white, fontSize: 20.0),
-    //   ),
-    // ),
-    // ],
-    //   ),
-    // ),
+            // FlatButton(
+            //   onPressed: _doCluodFunctions,
+            //   color: Colors.blue,
+            //   child: Text(
+            //     'cloud func',
+            //     style: TextStyle(color: Colors.white, fontSize: 20.0),
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+    );
     return scaffold;
   }
 }
